@@ -1,0 +1,17 @@
+development:
+  app_key: appkey_dev
+  app_secret: xxx 
+  domain: skippr.local
+  port: 3000 
+  secure: false
+
+test:
+  app_key: appkey_test
+  app_secret: xxx
+  domain: skippr.local
+    
+production:
+  app_key: appkey_prod
+  app_secret: xxx
+  domain: skippr.local
+
