@@ -1,5 +1,6 @@
 require 'digest/md5'
 require 'singleton'
+require 'active_support/json'
 
 module SkipprApi
 
@@ -49,6 +50,7 @@ module SkipprApi
     attr_reader :signature
     attr_reader :app_key
     attr_reader :user_key
+    attr_reader :valid_until
 
     def initialize(
         app_key, 
@@ -64,24 +66,96 @@ module SkipprApi
       @app_key = app_key
       @user_key = user_key
       @client = client
-      sig_src = app_secret + ":" + user_secret + ":" + valid_until.to_time.to_i.to_s
+      sig_src = user_secret + ":" + app_secret + ":" + valid_until.to_time.to_i.to_s
+      @port = port
       @signature = Digest::MD5.hexdigest(sig_src)
       @secure = secure
+      @valid_until = valid_until
     end
 
     def host
-      host = ((@secure)?'https':'http') + "://" + @client + '.' + @domain + ((@port.present?)?(":" + @port.to_s):"") + "/"
+      host = ((@secure)?'https':'http') + "://" + @client + '.' + @domain + ((@port.present?)?(":" + @port.to_s):"") + "/api/v1/"
+    end
+
+    def query_params
+      {:app_key => @app_key, :user_key => @user_key, :valid_until => @valid_until, :signature => @signature}
     end
 
   end
 
+  module MyJson
+      extend self 
+      def extension
+        nil
+      end
 
-  class Base < ActiveResource::Base
+      def mime_type
+        "application/json"
+      end
+
+      def encode(hash, options={})
+        hash.to_json(options)
+      end
+
+      def decode(json)
+        ActiveSupport::JSON.decode(json)
+      end
+  end  
+
+  class ApiResource < ActiveResource::Base
+          self.format = MyJson
+          class << self
+            def element_path(id, prefix_options = {}, query_options = nil)
+              prefix_options, query_options = split_options(prefix_options) if query_options.nil?
+              "#{prefix(prefix_options)}#{collection_name}/#{id}#{query_string(query_options)}"
+            end
+
+            def collection_path(prefix_options = {}, query_options = nil)
+              prefix_options, query_options = split_options(prefix_options) if query_options.nil?
+              "#{prefix(prefix_options)}#{collection_name}#{query_string(query_options)}"
+            end
+          end
 
   end
 
-  class ServiceType < Base
 
+  class ApiFactory
+    #
+    # Creates a module that serves as an ActiveResource
+    # client for the specified user
+    #
+    def self.create_api(auth)
+      # specify the site.  Default to no credentials
+      @url_base = auth.host
+      # build a module name.  This assumes that logins are unique.
+      # it also assumes they're valid ruby module names when capitalized
+      @module = auth.user_key.capitalize
+      @params = auth.query_params
+      class_eval <<-"end_eval",__FILE__, __LINE__
+      module #{@module}
+        class Invoice < ApiResource
+          self.site = "#{@url_base}"
+          AUTH = {
+            :app => "#{auth.app_key}",
+            :user => "#{auth.user_key}",
+            :validuntil => "#{auth.valid_until.to_time.to_i.to_s}",
+            :signature => "#{auth.signature}",
+          }
+
+          def self.element_path(id, prefix_options = {}, query_options = nil)
+              prefix_options, query_options = split_options(prefix_options) if query_options.nil?
+              query_options = ( query_options.nil? ) ? AUTH : query_options.merge(AUTH)
+              prefix(prefix_options) + collection_name+ "/" + id.to_s + query_string(query_options)
+            end
+
+        end
+        # return the module, not the last site String
+        self
+      end
+      end_eval
+    end
   end
+
+
 
 end
