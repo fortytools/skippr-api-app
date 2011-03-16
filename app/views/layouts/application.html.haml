@@ -6,5 +6,18 @@
 
     %meta{"http-equiv" =>"Content-Type", :content=>"text/html; charset=utf-8"}/
 %body
+  - if flash[:error]
+    #errorMsg
+      %p
+        != flash[:error]
+  - if flash[:notice]
+    #infoMsg
+      %p
+        != flash[:notice]
+  -if flash[:success]
+    #okMsg
+      %p
+        != flash[:success]
   != yield
+
 

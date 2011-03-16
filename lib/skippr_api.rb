@@ -1,6 +1,8 @@
 require 'digest/md5'
 require 'singleton'
 require 'active_support/json'
+require "net/http"
+require "uri"
 
 module SkipprApi
 
@@ -73,12 +75,28 @@ module SkipprApi
       @valid_until = valid_until
     end
 
+
+
     def host
       host = ((@secure)?'https':'http') + "://" + @client + '.' + @domain + ((@port.present?)?(":" + @port.to_s):"") + "/api/v1/"
     end
 
     def query_params
-      {:app_key => @app_key, :user_key => @user_key, :valid_until => @valid_until, :signature => @signature}
+      {:app => @app_key, :user => @user_key, :validuntil => @valid_until.to_time.to_i.to_s, :signature => @signature}
+    end
+
+    def valid?
+       # raise host + 'auth/valid?' + query_params.to_param 
+      #begin
+        uri = URI.parse(host + 'auth/valid?' + query_params.to_param)
+        http = Net::HTTP.new(uri.host, uri.port)
+        response = http.request(Net::HTTP::Get.new(uri.request_uri))
+        #raise host + 'auth/valid?' + query_params.to_param + '    :' +  Net::HTTP.get_print(uri)  
+        response.code == '200' && response.read_body == 'OK'
+      #rescue
+      #  false
+      #end
+
     end
 
   end

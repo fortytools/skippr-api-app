@@ -1,0 +1,13 @@
+%h1 Login plz
+!= form_tag do_login_path, :method => :post do
+  %ul
+    %li
+      name: 
+      != text_field :user, :name
+    %li
+      client:
+      != text_field :user, :client
+    %li
+      secret:
+      != text_field :user, :secret
+  != submit_tag

@@ -56,4 +56,11 @@ SkipprApp::Application.routes.draw do
   # Note: This route will make all actions in every controller accessible via GET requests.
   # match ':controller(/:action(/:id(.:format)))'
   resource :home, :controller => 'home'
+  resource :login, :controller => 'login', :only => [:show] do
+    member do
+      post :do
+      get  :auto
+    end 
+  end
+
 end
