@@ -1,0 +1,26 @@
+%h1
+  Kunde:
+  =@customer.address.name
+  ="(#{@customer.customernumber})"
+%p=@customer.shortinfo
+
+%h2 Adresse
+%dl
+  %dt Strasse
+  %dd=@customer.address.street
+  %dt Stadt
+  %dd
+    =@customer.address.zip
+    =@customer.address.city
+
+%h2 Kontakt
+%dl
+  %dt Email
+  %dd=@customer.email
+  %dt Fax
+  %dd=@customer.fax
+  %dt Fon
+  %dd=@customer.phone
+  
+
+ 

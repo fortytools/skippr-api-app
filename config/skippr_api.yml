@@ -1,6 +1,6 @@
 development:
   app_key: foobarbaz
-  app_secret: 96d446d2cc305da05460ad41cdbd2e17
+  app_secret: c6ebab4202803920a37c3f1f0346f73d
   domain: skippr.local
   port: 3000 
   secure: false

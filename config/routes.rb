@@ -62,5 +62,6 @@ SkipprApp::Application.routes.draw do
       get  :auto
     end 
   end
+  resources :customer, :only => [:show]
 
 end

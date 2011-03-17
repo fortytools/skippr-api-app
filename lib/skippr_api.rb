@@ -121,17 +121,29 @@ module SkipprApi
   end  
 
   class ApiResource < ActiveResource::Base
+
+          def self.auth=(auth)
+            @@auth = auth
+          end
+
+          def self.auth
+            @@auth
+          end
+
           self.format = MyJson
           class << self
             def element_path(id, prefix_options = {}, query_options = nil)
               prefix_options, query_options = split_options(prefix_options) if query_options.nil?
+              query_options = ( query_options.nil? ) ? self.auth : query_options.merge(self.auth)
               "#{prefix(prefix_options)}#{collection_name}/#{id}#{query_string(query_options)}"
             end
 
             def collection_path(prefix_options = {}, query_options = nil)
               prefix_options, query_options = split_options(prefix_options) if query_options.nil?
+              query_options = ( query_options.nil? ) ? self.auth : query_options.merge(self.auth)
               "#{prefix(prefix_options)}#{collection_name}#{query_string(query_options)}"
             end
+
           end
 
   end
@@ -151,22 +163,25 @@ module SkipprApi
       @params = auth.query_params
       class_eval <<-"end_eval",__FILE__, __LINE__
       module #{@module}
-        class Invoice < ApiResource
+        class AuthBasedResource < ApiResource
           self.site = "#{@url_base}"
-          AUTH = {
+          self.auth = {
             :app => "#{auth.app_key}",
             :user => "#{auth.user_key}",
             :validuntil => "#{auth.valid_until.to_time.to_i.to_s}",
             :signature => "#{auth.signature}",
           }
-
-          def self.element_path(id, prefix_options = {}, query_options = nil)
-              prefix_options, query_options = split_options(prefix_options) if query_options.nil?
-              query_options = ( query_options.nil? ) ? AUTH : query_options.merge(AUTH)
-              prefix(prefix_options) + collection_name+ "/" + id.to_s + query_string(query_options)
-            end
-
         end
+
+        class Invoice < AuthBasedResource
+        end
+
+        class ServiceType < AuthBasedResource
+        end
+
+        class Customer < AuthBasedResource
+        end
+
         # return the module, not the last site String
         self
       end

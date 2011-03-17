@@ -1,3 +1,15 @@
 %h1 Skippr App Demo
-%pre=@foo
+%p=@foo
+%ul
+  - @service_types.each do |st|
+    %li=st.name
+
+%table
+  - @customers.each do |c|
+    %tr
+      %td=c.shortname
+      %td
+        != link_to 'details', customer_path(c.id)
+
+
 
