@@ -1,0 +1,89 @@
+html {
+      background: url("../images/layout/bg.png") repeat scroll 0 0 #E9EBF1;
+          font-family: "Lucida Grande",Tahoma,Arial,Helvetica,sans-serif;
+}
+html, body, form, fieldset {
+  margin: 0;
+  padding: 0;
+}
+.content {
+    -moz-box-sizing: border-box;
+    background: none repeat scroll 0 0 #FFFFFF;
+    border: 1px solid #CCCED6;
+    border-radius: 7px 7px 7px 7px;
+    width: 800px;
+    margin: 20px auto 0 auto;
+    padding: 20px;
+}
+
+th:last-child {
+    border-bottom-right-radius: 4px;
+    border-top-right-radius: 4px;
+}
+td:last-child, th:last-child {
+    padding-right: 14px;
+}
+th {
+    background: none repeat scroll 0 0 #E4EAF9;
+    border: medium none;
+}
+td, th {
+    border-bottom: 1px solid #DFDFDF;
+    padding: 14px 4px;
+    text-align: left;
+}
+
+td.action {
+  text-align: right;
+}
+table {
+    font-size: 12px;
+    line-height: 1.25;
+    width: 100%
+}
+table {
+    border-collapse: collapse;
+    border-spacing: 0;
+}
+
+.nav {
+    width: 800px;
+    margin: 100px auto 0 auto;
+}
+
+.nav a {
+    font-size: 20px;
+    letter-spacing: -1px;
+    line-height: 1;
+    text-shadow: 1px 1px 1px rgba(0, 0, 0, 0.25);
+    color: #3562BB;
+}
+
+.footer {
+  width: 800px;
+  margin: 20px auto 0 auto;
+  height: 50px;
+
+}
+.footer a {
+    color: #5F739B;
+}
+.copyright a {
+    display: block;
+    padding-right: 157px;
+}
+a:active {
+}
+.copyright {
+    margin-right: 0;
+}
+.copyright {
+    background: url("../images/logos/fortytools-logo-transp.png") no-repeat scroll 100% 0 transparent;
+    float: right;
+    font-size: 9px;
+    margin: 7px 28px 0 0;
+    padding: 6px 0;
+    text-align: right;
+    text-transform: uppercase;
+    width: 257px;
+}

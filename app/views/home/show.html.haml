@@ -1,15 +1,31 @@
 %h1 Skippr App Demo
-%p=@foo
-%ul
-  - @service_types.each do |st|
-    %li=st.name
 
+%h2 customers
 %table
+  %tr
+    %th Shortname
+    %th
   - @customers.each do |c|
     %tr
       %td=c.shortname
-      %td
+      %td.action
         != link_to 'details', customer_path(c.id)
+%h2 service types
+%ul
+  - @service_types.each do |st|
+    %li=st.name
+%h2 invoices
+%table
+  %tr
+    %th Customer
+    %th Invoice date
+    %th
+  - @invoices.each do |c|
+    %tr
+      %td=c.customer.shortname
+      %td=c.date
+      %td.action
+        != link_to 'details', invoice_path(c.id)
 
 
 

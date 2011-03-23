@@ -1,0 +1,43 @@
+%h1 
+  Invoice:
+  =@invoice.number
+%dl
+  %dt date:
+  %dd=@invoice.date
+  %dt name:
+  %dd=@invoice.name
+  %dt street
+  %dd=@invoice.street
+  %dt zip/city
+  %dd
+    =@invoice.zip
+    =@invoice.city
+%p=@invoice.headertext
+%table
+  %tr
+    %th Pos.
+    %th 
+      Text
+      %br
+      Date
+    %th Price
+    %th Quantity
+    %th % Vat
+  - @invoice.invoice_positions.each do |ip|
+    %tr
+      %td=ip.number
+      %td
+        =ip.title
+        %br
+        =ip.details
+        %br
+        =ip.service_period_start
+        \-
+        =ip.service_period_end
+      %td=ip.price
+      %td=ip.quantity
+      %td=ip.vat
+
+
+%p=@invoice.footertext
+

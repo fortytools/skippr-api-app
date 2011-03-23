@@ -5,6 +5,7 @@
     %title= "Skippr Example App"
 
     %meta{"http-equiv" =>"Content-Type", :content=>"text/html; charset=utf-8"}/
+    != stylesheet_link_tag "/stylesheets/default.css",  :media => "screen,projection"
 %body
   - if flash[:error]
     #errorMsg
@@ -18,6 +19,14 @@
     #okMsg
       %p
         != flash[:success]
-  != yield
-
+  .nav
+    != link_to "Home", home_path
+  .content
+    != yield
+  
+  .footer
+    %a{:href => "http://skippr.com/"}
+      %img{:alt => "Skippr-logo-transp", :src => "/images/logos/skippr-logo-transp.png?1294827422"}/
+    .copyright
+      %a{:href => "http://fortytools.com", :target => "_blank"} Ein Tool von fortytools
 
