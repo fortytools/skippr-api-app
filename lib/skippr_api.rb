@@ -104,7 +104,7 @@ module SkipprApi
   module MyJson
       extend self 
       def extension
-        nil
+        "json"
       end
 
       def mime_type
@@ -121,6 +121,7 @@ module SkipprApi
   end  
 
   class ApiResource < ActiveResource::Base
+          include_root_in_json = false      
 
           def self.auth=(auth)
             @@auth = auth
@@ -174,6 +175,10 @@ module SkipprApi
         end
 
         class Invoice < AuthBasedResource
+        end
+
+        class InvoicePosition < AuthBasedResource
+          
         end
 
         class ServiceType < AuthBasedResource

@@ -5,7 +5,12 @@
     %title= "Skippr Example App"
 
     %meta{"http-equiv" =>"Content-Type", :content=>"text/html; charset=utf-8"}/
+    != stylesheet_link_tag "/stylesheets/uni-form-generic.css",  :media => "screen,projection"
+    != stylesheet_link_tag "/stylesheets/uni-form.css",  :media => "screen,projection"
     != stylesheet_link_tag "/stylesheets/default.css",  :media => "screen,projection"
+    != javascript_include_tag "http://ajax.googleapis.com/ajax/libs/jquery/1.5.1/jquery.min.js"
+    != javascript_include_tag "/javascripts/application.js"
+  %script{:type => "javascript"}
 %body
   - if flash[:error]
     #errorMsg

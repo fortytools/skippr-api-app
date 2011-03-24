@@ -16,16 +16,23 @@
     %li=st.name
 %h2 invoices
 %table
-  %tr
-    %th Customer
-    %th Invoice date
-    %th
-  - @invoices.each do |c|
+  %thead 
     %tr
-      %td=c.customer.shortname
-      %td=c.date
-      %td.action
-        != link_to 'details', invoice_path(c.id)
+      %th Customer
+      %th Invoice date
+      %th
+  %tbody
+    - @invoices.each do |c|
+      %tr
+        %td=c.customer.shortname
+        %td=c.date
+        %td.action
+          != link_to 'details', invoice_path(c.id)
+  %tfoot
+    %tr
+      %td.action{:colspan => "3"}
+        != link_to "new Invoice", new_invoice_path
+
 
 
 

@@ -1,0 +1,67 @@
+%h1 New invoice
+
+- form_tag invoices_path, :method => :post, :class =>"uniForm"  do
+  %fieldset.inlineLabels
+    %ol
+      %li.string.optional
+        %label
+          Customer:
+        != select_tag '[invoice]customer_id', options_from_collection_for_select(@customers, "id", "shortname")
+      %li.string.optional
+        %label
+          Date:
+        != text_field_tag '[invoice]date', Date.today.strftime('%d.%m.%Y')
+      %li.string.optional
+        %label
+          Name:
+        != text_field_tag '[invoice]name'
+      %li.string.optional
+        %label
+          Street:
+        != text_field_tag '[invoice]street'
+      %li.string.optional
+        %label
+          Zip / City:
+        != text_field_tag '[invoice]zip', nil, :class => "tiny"
+        != text_field_tag '[invoice]city',nil , :class => "medium"
+      %li.string
+        %label
+          Headertext:
+        != text_area_tag "headertext"
+      %li.string
+        %label
+          Footertext:
+        != text_area_tag "footertext"
+      %li
+  %table
+    %thead
+      %tr
+        %td{:style => "width: 25%"} Description
+        %td Start
+        %td End
+        %td Price
+        %td Quantity
+    %tbody.positions
+    %tfoot
+      %tr
+        %td.action{:colspan => '5'}
+          %a{:onclick => "newpos()"}
+            new position 
+      %tr
+        %td
+          != submit_tag "create"
+%table{:style => "display: none"}
+  %tbody.template
+    %tr
+      %td.description
+        != text_field_tag '[invoice_positions][0]number', nil, :class => 'number'
+        != text_field_tag '[invoice_positions][0][title]' 
+        %br
+        != text_area_tag '[invoice_positions][0][details]'
+        %br
+        != select_tag "[invoice_positions][0][service_type_id]", options_from_collection_for_select(@service_types, "id", "name")
+        %td!= text_field_tag '[invoice_positions][0][service_period_start]', Date.today.strftime('%d.%m.%Y'), :size => 10
+        %td!= text_field_tag '[invoice_positions][0][service_period_end]', Date.today.strftime('%d.%m.%Y'), :size => 10
+        %td!= text_field_tag '[invoice_positions][0][price]', "1,0", :size => 10
+        %td!= text_field_tag '[invoice_positions][0][quantity]', "1,0", :size => 10
+

@@ -31,6 +31,7 @@ td, th {
     border-bottom: 1px solid #DFDFDF;
     padding: 14px 4px;
     text-align: left;
+    vertical-align: top;
 }
 
 td.action {
@@ -86,4 +87,34 @@ a:active {
     text-align: right;
     text-transform: uppercase;
     width: 257px;
+}
+input[type="text"], input[type="email"], input[type="tel"], input[type="password"], textarea {
+    -moz-box-sizing: border-box;
+    background: none repeat scroll 0 0 #FFFFFF;
+    border: medium none;
+    box-shadow: 1px 1px 3px rgba(0, 0, 0, 0.35) inset;
+    color: #555555;
+    font-size: 12px;
+    margin: 0 0 4px;
+    padding: 3px;
+}
+li, blockquote, dd {
+    list-style: none outside none;
+    margin-left: 1.5em;
+    padding: 0;
+}
+.uniForm .tiny {
+    margin-right: 7px !important;
+    width: 50px !important;
+}
+.uniForm ol li {
+    margin: 1em 0;
+    padding: 0 1em;
+}
+.uniForm .medium {
+    margin-right: 7px !important;
+    width: 178px !important;
+}
+.description input, .description select, .description textarea {
+  width: 100%;
 }
