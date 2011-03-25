@@ -1,6 +1,14 @@
 %h1 Skippr App Demo
 
 %h2 customers
+- form_tag home_path, :method => :get, :class => "uniForm" do
+  %fieldset.inlineLabels
+    %ol
+      %li.string.optional
+        %label
+          Search:
+        != text_field_tag 'search'
+        != submit_tag "search!"
 %table
   %tr
     %th Shortname

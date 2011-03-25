@@ -5,6 +5,10 @@ class HomeController < ApplicationController
   def show
     @invoices = @api::Invoice.all
     @service_types = @api::ServiceType.all
-    @customers = @api::Customer.all
+    if params[:search].blank?
+      @customers = @api::Customer.all
+    else
+      @customers = @api::Customer.find(:all, :params => {:email => params[:search]})
+    end
   end
 end
