@@ -63,6 +63,6 @@ SkipprApp::Application.routes.draw do
     end 
   end
   resources :invoices, :only => [:show, :new, :create]
-  resources :customer, :only => [:show]
+  resources :customer, :only => [:show, :new, :create]
 
 end

@@ -5,6 +5,7 @@ class HomeController < ApplicationController
   def show
     @invoices = @api::Invoice.all
     @service_types = @api::ServiceType.all
+    @customer_states = @api::CustomerState.all
     if params[:search].blank?
       @customers = @api::Customer.all
     else

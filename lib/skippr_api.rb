@@ -187,6 +187,9 @@ module SkipprApi
         class Customer < AuthBasedResource
         end
 
+        class CustomerState < AuthBasedResource
+        end
+
         # return the module, not the last site String
         self
       end

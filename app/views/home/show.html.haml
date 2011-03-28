@@ -18,9 +18,15 @@
       %td=c.shortname
       %td.action
         != link_to 'details', customer_path(c.id)
-%h2 service types
-%ul
+%ul{:style => "width: 45%; float: right"}
+  %li
+    %em service types
   - @service_types.each do |st|
+    %li=st.name
+%ul{:style => "width: 100%; margin-right: 50%"}
+  %li
+    %em customer states
+  - @customer_states.each do |st|
     %li=st.name
 %h2 invoices
 %table
