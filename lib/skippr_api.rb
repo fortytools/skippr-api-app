@@ -3,6 +3,7 @@ require 'singleton'
 require 'active_support/json'
 require "net/http"
 require "uri"
+require "timeout"
 
 module SkipprApi
 
@@ -86,17 +87,16 @@ module SkipprApi
     end
 
     def valid?
-       # raise host + 'auth/valid?' + query_params.to_param 
-      #begin
-        uri = URI.parse(host + 'auth/valid?' + query_params.to_param)
-        http = Net::HTTP.new(uri.host, uri.port)
-        response = http.request(Net::HTTP::Get.new(uri.request_uri))
-        #raise host + 'auth/valid?' + query_params.to_param + '    :' +  Net::HTTP.get_print(uri)  
-        response.code == '200' && response.read_body == 'OK'
-      #rescue
-      #  false
-      #end
-
+      begin 
+          puts "XXXXXXXx##########:" + host + 'auth/valid?' + query_params.to_param
+          uri = URI.parse(host + 'auth/valid?' + query_params.to_param)
+          http = Net::HTTP.new(uri.host, uri.port)
+          response = http.request(Net::HTTP::Get.new(uri.request_uri))
+          response.code == '200' && response.read_body == 'OK'
+      rescue Timeout::Error
+        puts "safsdfsdf"
+        false
+      end
     end
 
   end
@@ -122,6 +122,7 @@ module SkipprApi
 
   class ApiResource < ActiveResource::Base
           include_root_in_json = false      
+          self.timeout = 2
 
           def self.auth=(auth)
             @@auth = auth
@@ -142,7 +143,7 @@ module SkipprApi
             def collection_path(prefix_options = {}, query_options = nil)
               prefix_options, query_options = split_options(prefix_options) if query_options.nil?
               query_options = ( query_options.nil? ) ? self.auth : query_options.merge(self.auth)
-              "#{prefix(prefix_options)}#{collection_name}#{query_string(query_options)}"
+            "#{prefix(prefix_options)}#{collection_name}#{query_string(query_options)}"
             end
 
           end
@@ -185,6 +186,9 @@ module SkipprApi
         end
 
         class Customer < AuthBasedResource
+        end
+
+        class Address < AuthBasedResource
         end
 
         class CustomerState < AuthBasedResource

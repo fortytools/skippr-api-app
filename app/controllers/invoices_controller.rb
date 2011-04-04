@@ -20,7 +20,7 @@ class InvoicesController < ApplicationController
     invoice =  @api::Invoice.new(params[:invoice])
     invoice.invoice_positions_attributes = ips
 
-    invoice.save.inspect
+    invoice.save
     redirect_to invoice_path(:id => invoice.id)
   end
 end
