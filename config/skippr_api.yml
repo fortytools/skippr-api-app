@@ -1,8 +1,14 @@
 development:
+  # key and secret are displayed in skippr itself
   app_key: meineapp1
   app_secret: b6bf3849a8303058c058d301be415a86
+
+  # the domain where the skippr installation is deployed that serves
+  # the API you want to talk to
   domain: skippr.local
   port: 3030 
+
+  # default: true - if the API is served via SSL
   secure: false
 
 test:
