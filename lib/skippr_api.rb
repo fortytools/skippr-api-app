@@ -16,6 +16,8 @@ module SkipprApi
     attr_reader :port
     attr_reader :app_key
     attr_reader :app_secret
+    attr_reader :user
+    attr_reader :password
 
     def self.setup(config)
       self.instance.setup_i(config)
@@ -26,7 +28,11 @@ module SkipprApi
     end
 
 
+
+
     def setup_i(config)
+      @user = config['user']
+      @password = config['password']
       @domain = config['domain']
       @app_secret = config['app_secret']
       @app_key = config['app_key']
@@ -41,7 +47,7 @@ module SkipprApi
       user_key, 
       user_secret,
       valid_until)
-      Auth.new(@app_key, @app_secret, user_key, user_secret, client, valid_until, @domain, @port, @secure)
+      Auth.new(@app_key, @app_secret, user_key, user_secret, client, valid_until, @domain, @port, @secure, @user, @password)
     end
 
   end
@@ -54,6 +60,8 @@ module SkipprApi
     attr_reader :app_key
     attr_reader :user_key
     attr_reader :valid_until
+    attr_reader :password
+    attr_reader :user
 
     def initialize(
         app_key, 
@@ -64,16 +72,24 @@ module SkipprApi
         valid_until = Date.tomorrow.end_of_day,
         domain = 'skippr.com',
         port = nil,
-        secure = true)
+        secure = true,
+        user = nil,
+        password = nil)
       @domain = domain
       @app_key = app_key
       @user_key = user_key
       @client = client
-      sig_src = user_secret + ":" + app_secret + ":" + valid_until.to_time.to_i.to_s
+      sig_src = ""
+      unless user_secret.blank? || app_secret.blank? || valid_until.blank?
+        sig_src = user_secret + ":" + app_secret + ":" + valid_until.to_time.to_i.to_s
+      end
+
       @port = port
       @signature = Digest::MD5.hexdigest(sig_src)
       @secure = secure
       @valid_until = valid_until
+      @user = user
+      @password = password
     end
 
 
@@ -88,14 +104,33 @@ module SkipprApi
 
     def valid?
       begin 
-          puts "XXXXXXXx##########:" + host + 'auth/valid?' + query_params.to_param
           uri = URI.parse(host + 'auth/valid?' + query_params.to_param)
           http = Net::HTTP.new(uri.host, uri.port)
-          response = http.request(Net::HTTP::Get.new(uri.request_uri))
-          response.code == '200' && response.read_body == 'OK'
+          if @secure
+            http.use_ssl= true
+          end
+          rq = Net::HTTP::Get.new(uri.request_uri)
+          unless @user.blank?
+            rq.basic_auth(@user,@password)
+          end
+          response = http.request(rq)
+          body = response.read_body
+          if response.code == '200' && body == 'OK'
+            true
+          else
+            Rails.logger.info "Server responded: (#{response.code}) #{body}" 
+            false
+          end
+
       rescue Timeout::Error
-        puts "safsdfsdf"
+        Rails.logger.warn "timeout"
         false
+      rescue Errno::ECONNREFUSED
+        Rails.logger.warn "no api connection"
+        false
+      rescue
+        Rails.logger.info "exception when trying to authenticate"
+        false 
       end
     end
 
@@ -159,13 +194,25 @@ module SkipprApi
     def self.create_api(auth)
       # specify the site.  Default to no credentials
       @url_base = auth.host
+ 
+      # this is only if the api itself is protected with http basic auth
+      @basic_auth = ""    
+      if auth.user
+        @basic_auth = "
+          self.user = \"#{auth.user}\"
+          self.password = \"#{auth.password}\"
+        
+        "
+      end
+
       # build a module name.  This assumes that logins are unique.
       # it also assumes they're valid ruby module names when capitalized
-      @module = auth.user_key.capitalize
+      @module = 'M' + auth.user_key.capitalize
       @params = auth.query_params
       class_eval <<-"end_eval",__FILE__, __LINE__
       module #{@module}
         class AuthBasedResource < ApiResource
+          #{@basic_auth}
           self.site = "#{@url_base}"
           self.auth = {
             :app => "#{auth.app_key}",
