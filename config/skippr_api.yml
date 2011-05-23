@@ -11,6 +11,10 @@ development:
   # default: true - if the API is served via SSL
   secure: false
 
+  # credentials in case API runs with http basic auth
+  # user: myuser
+  # password: mypassword
+
 test:
   app_key: appkey_test
   app_secret: xxx
